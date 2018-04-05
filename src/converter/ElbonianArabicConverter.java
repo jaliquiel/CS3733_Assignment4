@@ -82,36 +82,36 @@ public class ElbonianArabicConverter {
                     throw new MalformedNumberException("Invalid Elbonian number: " + number);
                 }
             }
-                ArrayList<Integer> order = new ArrayList<>();
-                for (int i = 0; i < number.length(); i++){
-                    if (number.charAt(i) == 'M') {
-                        order.add(1);
-                    } else if (number.charAt(i) == 'e') {
-                        order.add(2);
-                    } else if (number.charAt(i) == 'D') {
-                        order.add(3);
-                    } else if (number.charAt(i) == 'C') {
-                        order.add(4);
-                    } else if (number.charAt(i) == 'm') {
-                        order.add(5);
-                    } else if (number.charAt(i) == 'L') {
-                        order.add(6);
-                    } else if (number.charAt(i) == 'X') {
-                        order.add(7);
-                    } else if (number.charAt(i) == 'w') {
-                        order.add(8);
-                    } else if (number.charAt(i) == 'V') {
-                        order.add(9);
-                    } else {
-                        order.add(10);
-                    }
+            ArrayList<Integer> order = new ArrayList<>();
+            for (int i = 0; i < number.length(); i++){
+                if (number.charAt(i) == 'M') {
+                    order.add(1);
+                } else if (number.charAt(i) == 'e') {
+                    order.add(2);
+                } else if (number.charAt(i) == 'D') {
+                    order.add(3);
+                } else if (number.charAt(i) == 'C') {
+                    order.add(4);
+                } else if (number.charAt(i) == 'm') {
+                    order.add(5);
+                } else if (number.charAt(i) == 'L') {
+                    order.add(6);
+                } else if (number.charAt(i) == 'X') {
+                    order.add(7);
+                } else if (number.charAt(i) == 'w') {
+                    order.add(8);
+                } else if (number.charAt(i) == 'V') {
+                    order.add(9);
+                } else {
+                    order.add(10);
                 }
-                for (int i = 0; i < order.size() - 1; i++) {
-                    if (order.get(i+1) < order.get(i)) {
-                        throw new MalformedNumberException("Incorrect order of Elbonian number: " + number);
-                    }
+            }
+            for (int i = 0; i < order.size() - 1; i++) {
+                if (order.get(i+1) < order.get(i)) {
+                    throw new MalformedNumberException("Incorrect order of Elbonian number: " + number);
                 }
-                this.number = number;
+            }
+            this.number = number;
         }
     }
 
@@ -154,6 +154,9 @@ public class ElbonianArabicConverter {
             return number;
         } else {
             int n = Integer.parseInt(number);
+            boolean hasE = false;
+            boolean hasM = false;
+            boolean hasW = false;
 
             if (n >= 1000) {
                 for (int i = 0; i < 3; i++) {
@@ -167,10 +170,15 @@ public class ElbonianArabicConverter {
             if (n >= 900) {
                 elbo+="e";
                 n -= 400;
+                hasE = true;
             }
             if (n >= 500) {
                 elbo += "D";
                 n -= 500;
+            }
+            if (n >= 400 && !hasE) {
+                elbo += "e";
+                n -= 400;
             }
             if (n >= 100) {
                 for (int i = 0; i < 3; i++) {
@@ -184,10 +192,15 @@ public class ElbonianArabicConverter {
             if (n >= 90) {
                 elbo += "m";
                 n -= 40;
+                hasM = true;
             }
             if (n >= 50) {
                 elbo+="L";
                 n -= 50;
+            }
+            if (n >= 40 && !hasM) {
+                elbo += "m";
+                n -= 40;
             }
             if (n >= 10) {
                 for (int i = 0; i < 3; i++) {
@@ -201,16 +214,23 @@ public class ElbonianArabicConverter {
             if (n >= 9) {
                 elbo += "w";
                 n -= 4;
+                hasW = true;
             }
             if (n >= 5) {
                 elbo += "V";
                 n -= 5;
             }
-            for (int i = 0; i < 3; i++) {
-                elbo += "I";
-                n -= 1;
-                if (n < 1) {
-                    break;
+            if (n >= 4 && !hasW) {
+                elbo += "w";
+                n -= 4;
+            }
+            if (n >=1) {
+                for (int i = 0; i < 3; i++) {
+                    elbo += "I";
+                    n -= 1;
+                    if (n < 1) {
+                        break;
+                    }
                 }
             }
         }

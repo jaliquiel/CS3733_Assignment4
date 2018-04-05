@@ -14,14 +14,18 @@ public class ConverterTests {
 
     @Test
     public void ArabicToElbonianTest() throws MalformedNumberException, ValueOutOfBoundsException {
-        ElbonianArabicConverter converter = new ElbonianArabicConverter("1");
-        ElbonianArabicConverter converter2 = new ElbonianArabicConverter("4332");
+        ElbonianArabicConverter converterMin = new ElbonianArabicConverter("1");
         assertEquals(converter.toElbonian(), "I");
+
+        ElbonianArabicConverter converterMax = new ElbonianArabicConverter("4332");
         assertEquals(converter2.toElbonian(), "MMMeDCCCmLXXXwVIII");
+
+        ElbonianArabicConverter converter1234 = new ElbonianArabicConverter("1234");
+        assertEquals(converter1234.toElbonian(), "MCCXXXw")
     }
 
     @Test
-    public void ElonianToArabicSampleTest() throws MalformedNumberException, ValueOutOfBoundsException {
+    public void ElbonianToArabicSampleTest() throws MalformedNumberException, ValueOutOfBoundsException {
         ElbonianArabicConverter converter = new ElbonianArabicConverter("I");
         ElbonianArabicConverter converter2 = new ElbonianArabicConverter("MMMeDCCCmLXXXwVIII");
         assertEquals(converter.toArabic(), 1);

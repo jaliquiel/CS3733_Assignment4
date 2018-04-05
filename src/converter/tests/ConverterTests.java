@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class ConverterTests {
 
     @Test
-    public void ArabicToElonianTest() throws MalformedNumberException, ValueOutOfBoundsException {
+    public void ArabicToElbonianTest() throws MalformedNumberException, ValueOutOfBoundsException {
         ElbonianArabicConverter converter = new ElbonianArabicConverter("1");
         ElbonianArabicConverter converter2 = new ElbonianArabicConverter("4332");
         assertEquals(converter.toElbonian(), "I");

@@ -12,27 +12,41 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConverterTests {
 
-    @Test
-    public void ArabicToElbonianTest() throws MalformedNumberException, ValueOutOfBoundsException {
-        ElbonianArabicConverter converterMin = new ElbonianArabicConverter("1");
-        assertEquals(converterMin.toElbonian(), "I");
+    /**
+     * Test cases for spaces between, after and before the number string
+     */
+    @Test(expected = MalformedNumberException.class)
+    public void spacesTest() throws MalformedNumberException, ValueOutOfBoundsException{
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("  2 0  ");
+    }
 
-        ElbonianArabicConverter converterMax = new ElbonianArabicConverter("3999");
-        assertEquals(converterMax.toElbonian(), "MMMeDmLwV");
-
-        ElbonianArabicConverter converter1234 = new ElbonianArabicConverter("1234");
-        assertEquals(converter1234.toElbonian(), "MCCXXXw");
-
-        ElbonianArabicConverter converter444 = new ElbonianArabicConverter("444");
-        assertEquals(converter444.toElbonian(), "emw");
+    @Test(expected = MalformedNumberException.class)
+    public void spacesTest3() throws MalformedNumberException, ValueOutOfBoundsException{
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("  MIII e");
     }
 
     @Test
-    public void ElbonianToArabicSampleTest() throws MalformedNumberException, ValueOutOfBoundsException {
-        ElbonianArabicConverter converter = new ElbonianArabicConverter("I");
-        ElbonianArabicConverter converter2 = new ElbonianArabicConverter("MMMeDmLwV");
-        assertEquals(converter.toArabic(), 1);
-        assertEquals(converter2.toArabic(), 3999);
+    public void spaceTest2() throws MalformedNumberException, ValueOutOfBoundsException{
+        ElbonianArabicConverter converter2 = new ElbonianArabicConverter("  20");
+    }
+
+    @Test
+    public void spaceTest4() throws MalformedNumberException, ValueOutOfBoundsException{
+        ElbonianArabicConverter converter2 = new ElbonianArabicConverter("  CCCw");
+    }
+
+    /**
+     * Test cases for MarformedNumberException
+     */
+    @Test(expected = MalformedNumberException.class)
+    public void ArabicElbonianTest() throws MalformedNumberException, ValueOutOfBoundsException {
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("  MMM5");
+    }
+
+    // todo should it be valueOut of bounds or malformed?
+    @Test(expected = ValueOutOfBoundsException.class)
+    public void ArabicElbonianTest2() throws MalformedNumberException, ValueOutOfBoundsException {
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("  234M");
     }
 
     @Test(expected = MalformedNumberException.class)
@@ -126,6 +140,9 @@ public class ConverterTests {
     }
 
 
+    /**
+     * Test cases for ValueOutOfBoundsException
+     */
     @Test(expected = ValueOutOfBoundsException.class)
     public void valueOutOfBoundsTest() throws MalformedNumberException, ValueOutOfBoundsException {
         ElbonianArabicConverter converter = new ElbonianArabicConverter("0");
@@ -144,4 +161,40 @@ public class ConverterTests {
     public void decimalTest2() throws MalformedNumberException, ValueOutOfBoundsException {
         ElbonianArabicConverter converter = new ElbonianArabicConverter("1.01");
     }
+
+    /**
+     * Test cases for toElbonian Function
+     */
+    @Test
+    public void ArabicToElonianTest() throws MalformedNumberException, ValueOutOfBoundsException {
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("1");
+        ElbonianArabicConverter converter2 = new ElbonianArabicConverter("3999");
+        ElbonianArabicConverter converter3 = new ElbonianArabicConverter("1837");
+        ElbonianArabicConverter converter4 = new ElbonianArabicConverter("2544");
+        ElbonianArabicConverter converter5 = new ElbonianArabicConverter("3666");
+        assertEquals(converter.toElbonian(), "I");
+        assertEquals(converter2.toElbonian(), "MMMeDmLwV");
+        assertEquals(converter3.toElbonian(), "MDCCCXXXVII");
+        assertEquals(converter4.toElbonian(), "MMDmw");
+        assertEquals(converter5.toElbonian(), "MMMDCLXVI");
+    }
+
+    /**
+     * Test cases for toArabic Function
+     */
+    @Test
+    public void ElonianToArabicSampleTest() throws MalformedNumberException, ValueOutOfBoundsException {
+        ElbonianArabicConverter converter = new ElbonianArabicConverter("I");
+        ElbonianArabicConverter converter2 = new ElbonianArabicConverter("MMMeDmLwV");
+        ElbonianArabicConverter converter3 = new ElbonianArabicConverter("MDCCCXXXVII");
+        ElbonianArabicConverter converter4 = new ElbonianArabicConverter("MMDmw");
+        ElbonianArabicConverter converter5 = new ElbonianArabicConverter("MMMDCLXVI");
+        assertEquals(converter.toArabic(), 1);
+        assertEquals(converter2.toArabic(), 3999);
+        assertEquals(converter3.toArabic(), 1837);
+        assertEquals(converter4.toArabic(), 2544);
+        assertEquals(converter5.toArabic(), 3666);
+    }
+    // TODO WRITE MORE
+
 }

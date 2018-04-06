@@ -13,7 +13,6 @@ import java.util.ArrayList;
  * @version 3/18/17
  */
 public class ElbonianArabicConverter {
-
     // A string that holds the number (Elbonian or Arabic) you would like to convert
     private final String number;
 
@@ -25,19 +24,31 @@ public class ElbonianArabicConverter {
      * number is Elbonian, it must be a valid Elbonian representation of a number.
      *
      * @param number A string that represents either a Elbonian or Arabic number.
-     * @throws MalformedNumberException  Thrown if the value is an Elbonian number that does not conform
-     *                                   to the rules of the Elbonian number system. Leading and trailing spaces should not throw an error.
+     * @throws MalformedNumberException Thrown if the value is an Elbonian number that does not conform
+     * to the rules of the Elbonian number system. Leading and trailing spaces should not throw an error.
      * @throws ValueOutOfBoundsException Thrown if the value is an Arabic number that cannot be represented
-     *                                   in the Elbonian number system.
+     * in the Elbonian number system.
      */
     public ElbonianArabicConverter(String number) throws MalformedNumberException, ValueOutOfBoundsException {
-
-        // TODO check to see if the number is valid, then set it equal to the string
-        // remove spaces
-        number.replaceAll(" ", "");
-
+        for(int n = 0; n < number.length(); n++){
+            char ch = number.charAt(n);
+            if(Character.isLetter(ch) || Character.isDigit(ch)){
+                if(n+1 < number.length()){
+                    if(number.charAt(n+1) == ' ')
+                        throw new MalformedNumberException("There are spaces in between characters ");
+                }
+            }
+        }
+        number = number.replaceAll(" ","");
         char c = number.charAt(0);
         if (Character.isDigit(c)) {
+            // todo CHECK: this checks so that we can't get anything but chars between 0 to 9 ***************
+            for(int m = 0; m < number.length(); m++){
+                char c3 = number.charAt(m);
+                if (c3 != '0' && c3 != '1' && c3 != '2' && c3 != '3' && c3 != '4' && c3 != '5' && c3 != '6' && c3 != '7' && c3 != '8' && c3 != '9')
+                    throw new ValueOutOfBoundsException("Invalid Arabic Number: There were Letters with Arabic Numbers: " + number);
+            }
+            // todo **************************************************************
             double testDec = Double.parseDouble(number);
             if (testDec % 1 != 0) {
                 throw new ValueOutOfBoundsException("Only whole numbers allowed");
@@ -182,7 +193,6 @@ public class ElbonianArabicConverter {
      * @return An Elbonian value
      */
     public String toElbonian () {
-        // TODO Fill in the method's body
         String elbo = "";
 
         if (Character.isLetter(number.charAt(0))) {

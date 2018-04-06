@@ -38,6 +38,10 @@ public class ElbonianArabicConverter {
 
         char c = number.charAt(0);
         if (Character.isDigit(c)) {
+            double testDec = Double.parseDouble(number);
+            if (testDec % 1 != 0) {
+                throw new ValueOutOfBoundsException("Only whole numbers allowed");
+            }
             int arabicNum = Integer.parseInt(number);
             if (arabicNum > 3999 || arabicNum < 1) {
                 throw new ValueOutOfBoundsException("Arabic number" + number + "is out of bounds");
@@ -90,160 +94,183 @@ public class ElbonianArabicConverter {
 
                     throw new MalformedNumberException("Invalid Elbonian number: " + number);
                 }
+                boolean hase = false;
+                boolean hasm = false;
+                boolean hasw = false;
+                if (number.length() - number.replace("e", "").length() > 0) {
+                    hase = true;
+                }
+                if (number.length() - number.replace("m", "").length() > 0) {
+                    hasm = true;
+                }
+                if (number.length() - number.replace("w", "").length() > 0) {
+                    hasw = true;
+                }
+                if (number.length() - number.replace("C", "").length() > 0 && hase) {
+                    throw new MalformedNumberException("No C with e");
+                }
+                if (number.length() - number.replace("X", "").length() > 0 && hasm) {
+                    throw new MalformedNumberException("No X with m");
+                }
+                if (number.length() - number.replace("I", "").length() > 0 && hasw) {
+                    throw new MalformedNumberException("No I with w");
+                }
                 ArrayList<Integer> order = new ArrayList<>();
-                for (int i = 0; i < number.length(); i++) {
-                    if (number.charAt(i) == 'M') {
+                for (int j = 0; j < number.length(); j++) {
+                    if (number.charAt(j) == 'M') {
                         order.add(1);
-                    } else if (number.charAt(i) == 'e') {
+                    } else if (number.charAt(j) == 'e') {
                         order.add(2);
-                    } else if (number.charAt(i) == 'D') {
+                    } else if (number.charAt(j) == 'D') {
                         order.add(3);
-                    } else if (number.charAt(i) == 'C') {
+                    } else if (number.charAt(j) == 'C') {
                         order.add(4);
-                    } else if (number.charAt(i) == 'm') {
+                    } else if (number.charAt(j) == 'm') {
                         order.add(5);
-                    } else if (number.charAt(i) == 'L') {
+                    } else if (number.charAt(j) == 'L') {
                         order.add(6);
-                    } else if (number.charAt(i) == 'X') {
+                    } else if (number.charAt(j) == 'X') {
                         order.add(7);
-                    } else if (number.charAt(i) == 'w') {
+                    } else if (number.charAt(j) == 'w') {
                         order.add(8);
-                    } else if (number.charAt(i) == 'V') {
+                    } else if (number.charAt(j) == 'V') {
                         order.add(9);
                     } else {
                         order.add(10);
                     }
                 }
-                for (int i = 0; i < order.size() - 1; i++) {
-                    if (order.get(i + 1) < order.get(i)) {
+                for (int k = 0; k < order.size() - 1; k++) {
+                    if (order.get(k + 1) < order.get(k)) {
                         throw new MalformedNumberException("Incorrect order of Elbonian number: " + number);
                     }
                 }
-                this.number = number;
+
             }
+            this.number = number;
         }
-
-        /**
-         * Converts the number to an Arabic numeral or returns the current value as an int if it is already
-         * in the Arabic form.
-         *
-         * @return An arabic value
-         */
-        public int toArabic () {
-            char c = number.charAt(0);
-            if (Character.isDigit(c)) {
-                return Integer.parseInt(number);
-            } else {
-                int countM = number.length() - number.replace("M", "").length();
-                int countD = number.length() - number.replace("D", "").length();
-                int counte = number.length() - number.replace("e", "").length();
-                int countC = number.length() - number.replace("C", "").length();
-                int countL = number.length() - number.replace("L", "").length();
-                int countm = number.length() - number.replace("m", "").length();
-                int countx = number.length() - number.replace("X", "").length();
-                int countV = number.length() - number.replace("V", "").length();
-                int countw = number.length() - number.replace("w", "").length();
-                int countI = number.length() - number.replace("I", "").length();
-                int total = countM * 1000 + countD * 500 + counte * 400 + countC * 100 + countL * 50 + countm * 40 + countx * 10 + countV * 5 + countw * 4 + countI;
-                return total;
-            }
-        }
-
-        /**
-         * Converts the number to an Elbonian numeral or returns the current value if it is already in the Elbonian form.
-         *
-         * @return An Elbonian value
-         */
-        public String toElbonian () {
-            // TODO Fill in the method's body
-            String elbo = "";
-
-            if (Character.isLetter(number.charAt(0))) {
-                return number;
-            } else {
-                int n = Integer.parseInt(number);
-                boolean hasE = false;
-                boolean hasM = false;
-                boolean hasW = false;
-
-                if (n >= 1000) {
-                    for (int i = 0; i < 3; i++) {
-                        elbo += "M";
-                        n -= 1000;
-                        if (n < 1000) {
-                            break;
-                        }
-                    }
-                }
-                if (n >= 900) {
-                    elbo += "e";
-                    n -= 400;
-                    hasE = true;
-                }
-                if (n >= 500) {
-                    elbo += "D";
-                    n -= 500;
-                }
-                if (n >= 400 && !hasE) {
-                    elbo += "e";
-                    n -= 400;
-                }
-                if (n >= 100 && !hasE) {
-                    for (int i = 0; i < 3; i++) {
-                        elbo += "C";
-                        n -= 100;
-                        if (n < 100) {
-                            break;
-                        }
-                    }
-                }
-                if (n >= 90) {
-                    elbo += "m";
-                    n -= 40;
-                    hasM = true;
-                }
-                if (n >= 50) {
-                    elbo += "L";
-                    n -= 50;
-                }
-                if (n >= 40 && !hasM) {
-                    elbo += "m";
-                    n -= 40;
-                }
-                if (n >= 10 && !hasM) {
-                    for (int i = 0; i < 3; i++) {
-                        elbo += "X";
-                        n -= 10;
-                        if (n < 10) {
-                            break;
-                        }
-                    }
-                }
-                if (n >= 9) {
-                    elbo += "w";
-                    n -= 4;
-                    hasW = true;
-                }
-                if (n >= 5) {
-                    elbo += "V";
-                    n -= 5;
-                }
-                if (n >= 4 && !hasW) {
-                    elbo += "w";
-                    n -= 4;
-                }
-                if (n >= 1 && !hasW) {
-                    for (int i = 0; i < 3; i++) {
-                        elbo += "I";
-                        n -= 1;
-                        if (n < 1) {
-                            break;
-                        }
-                    }
-                }
-            }
-            return elbo;
-        }
-
-
     }
+
+    /**
+     * Converts the number to an Arabic numeral or returns the current value as an int if it is already
+     * in the Arabic form.
+     *
+     * @return An arabic value
+     */
+    public int toArabic () {
+        char c = number.charAt(0);
+        if (Character.isDigit(c)) {
+            return Integer.parseInt(number);
+        } else {
+            int countM = number.length() - number.replace("M", "").length();
+            int countD = number.length() - number.replace("D", "").length();
+            int counte = number.length() - number.replace("e", "").length();
+            int countC = number.length() - number.replace("C", "").length();
+            int countL = number.length() - number.replace("L", "").length();
+            int countm = number.length() - number.replace("m", "").length();
+            int countx = number.length() - number.replace("X", "").length();
+            int countV = number.length() - number.replace("V", "").length();
+            int countw = number.length() - number.replace("w", "").length();
+            int countI = number.length() - number.replace("I", "").length();
+            int total = countM * 1000 + countD * 500 + counte * 400 + countC * 100 + countL * 50 + countm * 40 + countx * 10 + countV * 5 + countw * 4 + countI;
+            return total;
+        }
+    }
+
+    /**
+     * Converts the number to an Elbonian numeral or returns the current value if it is already in the Elbonian form.
+     *
+     * @return An Elbonian value
+     */
+    public String toElbonian () {
+        // TODO Fill in the method's body
+        String elbo = "";
+
+        if (Character.isLetter(number.charAt(0))) {
+            return number;
+        } else {
+            int n = Integer.parseInt(number);
+            boolean hasE = false;
+            boolean hasM = false;
+            boolean hasW = false;
+
+            if (n >= 1000) {
+                for (int i = 0; i < 3; i++) {
+                    elbo += "M";
+                    n -= 1000;
+                    if (n < 1000) {
+                        break;
+                    }
+                }
+            }
+            if (n >= 900) {
+                elbo += "e";
+                n -= 400;
+                hasE = true;
+            }
+            if (n >= 500) {
+                elbo += "D";
+                n -= 500;
+            }
+            if (n >= 400 && !hasE) {
+                elbo += "e";
+                n -= 400;
+            }
+            if (n >= 100 && !hasE) {
+                for (int i = 0; i < 3; i++) {
+                    elbo += "C";
+                    n -= 100;
+                    if (n < 100) {
+                        break;
+                    }
+                }
+            }
+            if (n >= 90) {
+                elbo += "m";
+                n -= 40;
+                hasM = true;
+            }
+            if (n >= 50) {
+                elbo += "L";
+                n -= 50;
+            }
+            if (n >= 40 && !hasM) {
+                elbo += "m";
+                n -= 40;
+            }
+            if (n >= 10 && !hasM) {
+                for (int i = 0; i < 3; i++) {
+                    elbo += "X";
+                    n -= 10;
+                    if (n < 10) {
+                        break;
+                    }
+                }
+            }
+            if (n >= 9) {
+                elbo += "w";
+                n -= 4;
+                hasW = true;
+            }
+            if (n >= 5) {
+                elbo += "V";
+                n -= 5;
+            }
+            if (n >= 4 && !hasW) {
+                elbo += "w";
+                n -= 4;
+            }
+            if (n >= 1 && !hasW) {
+                for (int i = 0; i < 3; i++) {
+                    elbo += "I";
+                    n -= 1;
+                    if (n < 1) {
+                        break;
+                    }
+                }
+            }
+        }
+        return elbo;
+    }
+
+
+}
